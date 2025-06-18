@@ -12,7 +12,7 @@ router.get("/", (_req, res) => {
   res.json(rows);
 });
 
-// GET /projects/1
+// GET /projects/:id
 router.get("/:id", (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -21,6 +21,47 @@ router.get("/:id", (req: Request, res: Response) => {
     .all(id);
 
   res.json(logs);
+});
+
+// GET /projects/:id/channels
+router.get("/:id/channels", (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+
+  const project = db.prepare("SELECT id FROM projects WHERE id = ?").get(id);
+
+  if (!project) {
+    return res.status(404).json({ error: "Project not found" });
+  }
+
+  const channels = db
+    .prepare("SELECT DISTINCT channel FROM logs WHERE project_id = ?")
+    .all(id);
+
+  res.json({ channels: channels.map((row) => row.channel) });
+});
+
+// GET /projects/:id/channels/:channel
+router.get("/:id/channel/:channel", (req: Request, res: Response) => {
+  const projectId = Number(req.params.id);
+  const channel = req.params.channel;
+
+  const project = db
+    .prepare("SELECT id FROM projects WHERE id = ?")
+    .get(projectId);
+
+  if (!project) {
+    return res.status(404).json({ error: "Project not found" });
+  }
+
+  const logs = db
+    .prepare(
+      `SELECT * FROM logs
+       WHERE project_id = ? AND channel = ?
+       ORDER BY created_at DESC`
+    )
+    .all(projectId, channel);
+
+  res.json({ logs });
 });
 
 // POST /projects
