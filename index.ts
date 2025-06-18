@@ -1,5 +1,4 @@
 import express from "express";
-import Database from "better-sqlite3";
 
 import db from "./db.ts";
 import { PORT } from "./config.ts";
