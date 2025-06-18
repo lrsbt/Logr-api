@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import { requireApiKey } from "../middleware/apiKey.ts";
 import db from "../db.ts";
 
 const router = Router();
@@ -10,29 +11,34 @@ router.get("/dev/all", (req, res) => {
 });
 
 // CATCH ACTUAL POST
-router.post("/data", (req: Request, res: Response): any => {
+router.post("/data", requireApiKey, (req: Request, res: Response): any => {
   const { project, channel = "default", event } = req.body;
 
+  // Check for params
+
   if (!project) {
-    return res.status(400).json({
-      error: "missing_field",
-      message: "Please provide a project name.",
-    });
+    return res.status(400).json({ error: "Missing field: project name" });
   }
 
   if (!event) {
-    return res.status(400).json({
-      error: "missing_field",
-      message: "Please provide an event name.",
-    });
+    return res.status(400).json({ error: "Missing field: event name" });
+  }
+
+  //  Check project exists
+  const projectExists = db
+    .prepare("SELECT id, name FROM projects WHERE name = ?")
+    .get(project);
+
+  if (!projectExists) {
+    return res.status(404).json({ error: "project not found" });
   }
 
   db.prepare(
     `
-    INSERT INTO logs (project, channel, event, created_at)
-    VALUES (?, ?, ?, ?)
-  `
-  ).run(project, channel, event, new Date().toISOString());
+  INSERT INTO logs (project_id, channel, event, created_at)
+  VALUES (?, ?, ?, ?)
+`
+  ).run(projectExists.id, channel, event, new Date().toISOString());
 
   return res.json({ ok: true });
 });

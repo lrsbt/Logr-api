@@ -13,10 +13,11 @@ db.exec(`
 
   CREATE TABLE IF NOT EXISTS logs (
     id INTEGER PRIMARY KEY,
-    project TEXT NOT NULL,
+    project_id INTEGER NOT NULL,
     channel TEXT DEFAULT 'default',
     event TEXT NOT NULL,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (project_id) REFERENCES projects(id)
   );
 `);
 
