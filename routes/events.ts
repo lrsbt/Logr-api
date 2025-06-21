@@ -4,8 +4,14 @@ import db from "../db.ts";
 
 const router = Router();
 
-// DEV
-router.get("/dev/all", (req, res) => {
+// MOVE THIS
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) return next();
+  res.status(401).send("Not logged in");
+}
+
+// DEV protected test
+router.get("/dev/all", ensureAuthenticated, (req, res) => {
   const rows = db.prepare("SELECT * FROM logs ORDER BY created_at DESC").all();
   res.json(rows);
 });
