@@ -1,3 +1,4 @@
+import cors from "cors";
 import express from "express";
 
 import db from "./db.ts";
@@ -7,6 +8,14 @@ import eventRoutes from "./routes/events.ts";
 import projectRoutes from "./routes/projects.ts";
 
 const app = express();
+
+// CORS
+app.use(
+  cors({
+    origin: "http://localhost:5173", // frontend URL
+    credentials: true,
+  })
+);
 
 // App
 app.use(express.json());

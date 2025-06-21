@@ -17,7 +17,15 @@ router.get("/:id", (req: Request, res: Response) => {
   const { id } = req.params;
 
   const logs = db
-    .prepare("SELECT * FROM logs WHERE project_id = ? ORDER BY created_at DESC")
+    // .prepare("SELECT * FROM logs WHERE project_id = ? ORDER BY created_at DESC")
+    .prepare(
+      `SELECT logs.*, projects.name AS project_name
+       FROM logs
+       JOIN projects ON logs.project_id = projects.id
+       WHERE logs.project_id = ?
+       ORDER BY logs.created_at DESC;
+      `
+    )
     .all(id);
 
   res.json(logs);
