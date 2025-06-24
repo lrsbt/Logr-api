@@ -1,19 +1,21 @@
 import Database from "better-sqlite3";
-import { DB_FILE } from "./config.ts";
-import { User } from "./types/user.ts";
+import { DB_FILE } from "../config.ts";
+import { User } from "../types/user.ts";
 
 const db = new Database(DB_FILE);
 
 // Create tables if they don't exist
 db.exec(`
   CREATE TABLE IF NOT EXISTS projects (
-    id INTEGER PRIMARY KEY,
-    name TEXT UNIQUE NOT NULL,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, name)
   );
 
   CREATE TABLE IF NOT EXISTS logs (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     project_id INTEGER NOT NULL,
     channel TEXT DEFAULT 'default',
     event TEXT NOT NULL,
@@ -25,6 +27,7 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
+    api_key TEXT UNIQUE NOT NULL,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
   );
 `);

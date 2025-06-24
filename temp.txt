@@ -1,0 +1,32 @@
+// INSPIRATION/GOAL
+
+curl -X POST https://api.logsnag.com/v1/log \
+  -H "Authorization: Bearer f9ab23c6508d610ffb651334d2f61f41" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "project": "pi",
+    "channel": "heartbeat",
+    "event": "Ping",
+    "description": "Pi is online!",
+    "icon": "📡"
+  }'
+
+// 1. CREATE A USER
+
+curl -X POST http://localhost:3000/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{"username":"dog", "password":"w00f" }'
+
+// 2. CREATE A PROJECT
+
+curl -X POST http://localhost:3000/projects \
+  -H "Authorization: Bearer 26c681fec8fb0ea1d845bf6a8f8a72c7" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Project1"}'
+
+// 3. POST AN EVENT
+
+curl -X POST http://localhost:3000/data \
+  -H "Authorization: Bearer 26c681fec8fb0ea1d845bf6a8f8a72c7" \
+  -H "Content-Type: application/json" \
+  -d '{"project":"MyLog", "channel":"default", "event":"test event"}'

@@ -1,12 +1,13 @@
 import session from "express-session";
 import SQLiteStore from "connect-sqlite3";
+import { DB_SESSIONS_FILE } from "../config.ts";
 
 const { default: connectSqlite3 } = await import("connect-sqlite3");
 const SQLiteStore = connectSqlite3(session);
 
 // SESSIONS
 const sessionMiddleware = session({
-  store: new SQLiteStore({ db: "logr-sessions.db" }),
+  store: new SQLiteStore({ db: DB_SESSIONS_FILE }),
   secret: process.env.SESSION_SECRET || "dev-secret",
   resave: false,
   saveUninitialized: false,

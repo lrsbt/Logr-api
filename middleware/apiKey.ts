@@ -1,23 +1,27 @@
 import { Request, Response, NextFunction } from "express";
 import { API_KEY } from "../config.ts";
 
+import db from "../db/index.ts";
+
 const requireApiKey = (
   req: Request,
   res: Response,
   next: NextFunction
 ): void => {
-  const key = req.headers["x-api-key"];
+  const apiKey = req.headers.authorization?.split(" ")[1]; // expects "Bearer <key>"
 
-  if (req.method === "GET") {
-    return next(); // Skip API key check for GET requests i.e. browser
+  if (!apiKey) {
+    return res.status(401).json({ error: "Missing API key" });
   }
 
-  if (key !== API_KEY) {
-    res.status(403).json({ error: "[Api key issues]. Nice try, catto" });
-    return;
+  const user = db.prepare("SELECT * FROM users WHERE api_key = ?").get(apiKey);
+
+  if (!user) {
+    return res.status(403).json({ error: "Invalid API key" });
   }
 
+  req.user = user; // Attach user to request
   next();
 };
 
-export { requireApiKey };
+export default requireApiKey;

@@ -1,14 +1,16 @@
 import cors from "cors";
 import express from "express";
 
-import db from "./db.ts";
+import db from "./db/index.ts";
 import { PORT } from "./config.ts";
-import passport from "./passport.ts";
-import sessionMiddleware from "./session.ts";
+import passport from "./lib/passport.ts";
 
 import eventRoutes from "./routes/events.ts";
 import authRoutes from "./routes/auth.ts";
 import projectRoutes from "./routes/projects.ts";
+
+import sessionMiddleware from "./middleware/session.ts";
+// import requireApiKey from "./middleware/apiKey.ts";
 
 const app = express();
 
@@ -23,13 +25,14 @@ app.use(
 // App
 app.use(express.json());
 app.use(sessionMiddleware);
+// app.use(requireApiKey);
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes
 app.use("/", eventRoutes);
-app.use("/projects", projectRoutes);
 app.use("/", authRoutes);
+app.use("/projects", projectRoutes);
 
 app.listen(PORT, () => {
   console.log(`✅ Listening at http://localhost:${PORT}`);

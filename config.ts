@@ -2,7 +2,5 @@
 export const PORT = 3000;
 
 // DB
-export const DB_FILE = "logr.db";
-
-// Api
-export const API_KEY = "super-secret-key";
+export const DB_FILE = "db/logr.db";
+export const DB_SESSIONS_FILE = "db/logr-sessions.db";

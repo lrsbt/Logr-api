@@ -1,11 +1,13 @@
 import { Router, Request, Response } from "express";
-import { requireApiKey } from "../middleware/apiKey.ts";
-import db from "../db.ts";
+import requireApiKey from "../middleware/apiKey.ts";
+import db from "../db/index.ts";
 
 const router = Router();
 
 // GET /projects
-router.get("/", (_req, res) => {
+router.get("/", requireApiKey, (_req, res) => {
+  // TODO this needs to be limited down to the projects the user can atually access
+
   const rows = db
     .prepare("SELECT * FROM projects ORDER BY created_at DESC")
     .all();
@@ -13,7 +15,9 @@ router.get("/", (_req, res) => {
 });
 
 // GET /projects/:id
-router.get("/:id", (req: Request, res: Response) => {
+router.get("/:id", requireApiKey, (req: Request, res: Response) => {
+  // TODO this needs to be limited down to the projects the user can atually access
+
   const { id } = req.params;
 
   const logs = db
@@ -75,15 +79,21 @@ router.get("/:id/channel/:channel", (req: Request, res: Response) => {
 // POST /projects
 router.post("/", requireApiKey, (req: Request, res: Response): any => {
   const { name } = req.body;
+  const user = req.user; // added to the request by requireApiKey
 
-  if (!name) {
-    return res.status(400).json({ error: "Please provide a project name." });
+  if (!name || !user) {
+    return res.status(400).json({ error: "Missing project name or user" });
   }
 
   try {
-    const stmt = db.prepare("INSERT INTO projects (name) VALUES (?)");
-    const result = stmt.run(name);
-    res.status(201).json({ id: result.lastInsertRowid, name });
+    const stmt = db.prepare(
+      "INSERT INTO projects (name, user_id) VALUES (?, ?)"
+    );
+    const result = stmt.run(name, parseInt(user.id));
+    res.json({
+      success: true,
+      project: { id: result.lastInsertRowid, name },
+    });
   } catch (err: any) {
     const error = err as Error & { code?: string };
     if (error.code === "SQLITE_CONSTRAINT_UNIQUE") {

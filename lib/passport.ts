@@ -1,7 +1,7 @@
 import passport from "passport";
 import bcrypt from "bcrypt";
 import { Strategy as LocalStrategy } from "passport-local";
-import { getUserByUsername, getUserById } from "./db"; // your helpers
+import { getUserByUsername, getUserById } from "../db/index.ts";
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {
@@ -14,6 +14,7 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => done(null, user.id));
+
 passport.deserializeUser(async (id, done) => {
   const user = await getUserById(id);
   done(null, user);
