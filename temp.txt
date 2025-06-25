@@ -1,7 +1,7 @@
 // INSPIRATION/GOAL
 
 curl -X POST https://api.logsnag.com/v1/log \
-  -H "Authorization: Bearer f9ab23c6508d610ffb651334d2f61f41" \
+  -H "Authorization: Bearer X" \
   -H "Content-Type: application/json" \
   -d '{
     "project": "pi",
@@ -20,13 +20,13 @@ curl -X POST http://localhost:3000/auth/signup \
 // 2. CREATE A PROJECT
 
 curl -X POST http://localhost:3000/projects \
-  -H "Authorization: Bearer 26c681fec8fb0ea1d845bf6a8f8a72c7" \
+  -H "Authorization: Bearer X" \
   -H "Content-Type: application/json" \
   -d '{"name": "Project1"}'
 
 // 3. POST AN EVENT
 
 curl -X POST http://localhost:3000/data \
-  -H "Authorization: Bearer 26c681fec8fb0ea1d845bf6a8f8a72c7" \
+  -H "Authorization: Bearer X" \
   -H "Content-Type: application/json" \
   -d '{"project":"MyLog", "channel":"default", "event":"test event"}'
