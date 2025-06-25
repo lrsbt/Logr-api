@@ -10,7 +10,6 @@ import authRoutes from "./routes/auth.ts";
 import projectRoutes from "./routes/projects.ts";
 
 import sessionMiddleware from "./middleware/session.ts";
-// import requireApiKey from "./middleware/apiKey.ts";
 
 const app = express();
 
@@ -32,7 +31,7 @@ app.use(passport.session());
 // Routes
 app.use("/", eventRoutes);
 app.use("/", authRoutes);
-app.use("/projects", projectRoutes);
+app.use("/", projectRoutes);
 
 app.listen(PORT, () => {
   console.log(`✅ Listening at http://localhost:${PORT}`);

@@ -1,5 +1,4 @@
 import session from "express-session";
-import SQLiteStore from "connect-sqlite3";
 import { DB_SESSIONS_FILE } from "../config.ts";
 
 const { default: connectSqlite3 } = await import("connect-sqlite3");

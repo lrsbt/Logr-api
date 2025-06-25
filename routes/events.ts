@@ -2,24 +2,12 @@ import { Router, Request, Response } from "express";
 import requireApiKey from "../middleware/apiKey.ts";
 
 import db from "../db/index.ts";
-import { ensureAuthenticated } from "./auth.ts";
 import { User } from "../types/user.ts";
 import { Project } from "../types/project.ts";
+import { ensureAuthenticated } from "./auth.ts";
+import { RequestWithUser } from "../types/requests.ts";
 
 const router = Router();
-
-// DEV protected test
-router.get("/dev/all", ensureAuthenticated, (req, res) => {
-  const rows = db.prepare("SELECT * FROM logs ORDER BY created_at DESC").all();
-  res.json(rows);
-});
-
-// CATCH ACTUAL POST
-export interface RequestWithUser extends Request {
-  user?: {
-    id: User["id"];
-  };
-}
 
 router.post(
   "/data",

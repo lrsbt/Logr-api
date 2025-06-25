@@ -220,6 +220,13 @@
     "@types/connect" "*"
     "@types/node" "*"
 
+"@types/connect-sqlite3@^0.9.5":
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/@types/connect-sqlite3/-/connect-sqlite3-0.9.5.tgz#78803c8f5c30c02f5e27f51324717079d6495690"
+  integrity sha512-T9HqA7a+eOSM+0ktRZbS1z7WOsRw0ZF3gaQjaExEN8wOnjmnPClkCgM815ta7vyeDF7wxL3aPmDOwrWuYKMr+g==
+  dependencies:
+    "@types/express" "*"
+
 "@types/connect@*":
   version "3.4.38"
   resolved "https://registry.npmjs.org/@types/connect/-/connect-3.4.38.tgz"
@@ -237,7 +244,14 @@
     "@types/range-parser" "*"
     "@types/send" "*"
 
-"@types/express@^5.0.3":
+"@types/express-session@^1.18.2":
+  version "1.18.2"
+  resolved "https://registry.yarnpkg.com/@types/express-session/-/express-session-1.18.2.tgz#778dc3296da9aa97d5bf8e42358a54c52a230317"
+  integrity sha512-k+I0BxwVXsnEU2hV77cCobC08kIsn4y44C3gC0b46uxZVMaXA04lSPgRLR/bSL2w0t0ShJiG8o4jPzRG/nscFg==
+  dependencies:
+    "@types/express" "*"
+
+"@types/express@*", "@types/express@^5.0.3":
   version "5.0.3"
   resolved "https://registry.npmjs.org/@types/express/-/express-5.0.3.tgz"
   integrity sha512-wGA0NX93b19/dZC1J18tKWVIYWyyF2ZjT9vin/NRu0qzzvfVzWjs04iq2rQ3H65vCTQYlRqs3YHfY7zjdV+9Kw==

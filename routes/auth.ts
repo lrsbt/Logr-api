@@ -22,8 +22,18 @@ router.post("/auth/logout", (req, res) => {
 
 router.get("/auth/me", (req, res) => {
   if (req.isAuthenticated()) {
-    const { id, username, created_at } = req.user;
-    res.send({ user: { id, username, created_at } });
+    const userId = req.user.id;
+    const user = db
+      .prepare(
+        "SELECT id, username, api_key, created_at FROM users WHERE id = ?"
+      )
+      .get(userId);
+
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+
+    res.send({ user });
   } else {
     res.status(401).send({ error: "Not logged in" });
   }

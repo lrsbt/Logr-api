@@ -29,4 +29,4 @@ curl -X POST http://localhost:3000/projects \
 curl -X POST http://localhost:3000/data \
   -H "Authorization: Bearer X" \
   -H "Content-Type: application/json" \
-  -d '{"project":"MyLog", "channel":"default", "event":"test event"}'
+  -d '{"project":"Project1", "channel":"default", "event":"test event"}'
