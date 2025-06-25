@@ -17,9 +17,7 @@ router.get(
     const user = req.user;
 
     const rows = db
-      .prepare(
-        "SELECT * FROM projects WHERE user_id = ? ORDER BY created_at DESC"
-      )
+      .prepare("SELECT * FROM projects WHERE user_id = ? ORDER BY name ASC")
       .all(user.id);
     res.json(rows);
   }
