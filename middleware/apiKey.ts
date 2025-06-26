@@ -1,18 +1,15 @@
-import { Request, Response, NextFunction } from "express";
-
 import db from "../db/index.ts";
 import { User } from "../types/user.ts";
 import { RequestWithUser } from "../types/requests.ts";
 
-const requireApiKey = (
-  req: RequestWithUser,
-  res: Response,
-  next: NextFunction
-): Response | void => {
+import type { RequestHandler } from "express";
+
+const requireApiKey: RequestHandler = (req, res, next) => {
   const apiKey = req.headers.authorization?.split(" ")[1]; // expects "Bearer <key>"
 
   if (!apiKey) {
-    return res.status(401).json({ error: "Missing API key" });
+    res.status(401).json({ error: "Missing API key" });
+    return;
   }
 
   const user = db
@@ -20,10 +17,11 @@ const requireApiKey = (
     .get(apiKey) as User | undefined;
 
   if (!user) {
-    return res.status(403).json({ error: "Invalid API key" });
+    res.status(403).json({ error: "Invalid API key" });
+    return;
   }
 
-  req.user = { id: user.id }; // Attach user to request
+  (req as RequestWithUser).user = { id: user.id }; // Attach user to request
   next();
 };
 
