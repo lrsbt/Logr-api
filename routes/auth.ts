@@ -3,60 +3,39 @@ import { Router, Request, Response } from "express";
 import db from "../db/index.ts";
 import passport from "../lib/passport.ts";
 import { createUser } from "../lib/createUser.ts";
+import {
+  getMe,
+  handleLogin,
+  handleLogout,
+  handleSignup,
+} from "../controllers/authController.ts";
 
 const router = Router();
 
-export const ensureAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) return next();
-  res.status(401).send("Not logged in");
-};
+/*
+  Post /auth/login
+*/
 
-router.post("/auth/login", passport.authenticate("local"), (req, res) => {
-  const { id, username, created_at } = req.user;
-  res.send({ success: true, user: { id, username, created_at } });
-});
+router.post("/auth/login", passport.authenticate("local"), handleLogin);
 
-router.post("/auth/logout", (req, res) => {
-  req.logout(() => res.send({ success: true }));
-});
+/*
+  Post /auth/logout
+*/
 
-router.get("/auth/me", (req, res) => {
-  if (req.isAuthenticated()) {
-    const userId = req.user.id;
-    const user = db
-      .prepare(
-        "SELECT id, username, api_key, created_at FROM users WHERE id = ?"
-      )
-      .get(userId);
+router.post("/auth/logout", handleLogout);
 
-    if (!user) {
-      return res.status(404).send({ error: "User not found" });
-    }
+/*
+  Post /auth/signup
+  username: string
+  password: string
+*/
 
-    res.send({ user });
-  } else {
-    res.status(401).send({ error: "Not logged in" });
-  }
-});
+router.post("/auth/signup", handleSignup);
 
-router.post("/auth/signup", async (req, res) => {
-  const { username, password } = req.body;
+/*
+  Get /auth/me
+*/
 
-  if (!username || !password) {
-    return res.status(400).json({ error: "Missing username or password" });
-  }
-
-  const userExists = db
-    .prepare("SELECT id FROM users WHERE username = ?")
-    .get(username);
-
-  if (userExists) {
-    return res.status(400).json({ error: "user already exists" });
-  }
-
-  const user = await createUser(username, password);
-
-  res.send({ success: true, user });
-});
+router.get("/auth/me", getMe);
 
 export default router;
